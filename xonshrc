@@ -1,1 +1,50 @@
-/home/phennessy/.xonshrc
+from tabulate import tabulate
+import json
+
+xontrib load vox
+
+# Shell Settings
+$CASE_SENSITIVE_COMPLETIONS = False
+$MULTILINE_PROMPT = ''
+$XONSH_COLOR_STYLE = 'monokai'
+$UPDATE_OS_ENVIRON = True
+$VC_BRANCH_TIMEOUT = 1
+$COMPLETIONS_CONFIRM = True
+$COMPLETIONS_DISPLAY = 'single'
+$XONSH_AUTOPAIR = True
+
+if $USER == 'root':
+    $PROMPT = "{BOLD_WHITE}[{BOLD_RED}root {BOLD_WHITE}: {BOLD_YELLOW}{cwd_base}{BOLD_WHITE}]{prompt_end} {NO_COLOR}"
+else:
+    $PROMPT = "{BOLD_WHITE}[{BOLD_WHITE}" + $USER + " {BOLD_WHITE}: {BOLD_YELLOW}{cwd_base}{BOLD_WHITE}]{prompt_end} {NO_COLOR}"
+
+$FORMATTER_DICT['branch_color'] = lambda: ('{BOLD_YELLOW}')
+$RIGHT_PROMPT = "{branch_color}{curr_branch}{NO_COLOR}"
+$SHELL_TYPE   = "prompt_toolkit"
+$TITLE        = "{current_job} [Xonsh]"
+
+try:
+    del $SHELL # Needed because it cannot find the `exec` sys call from the shell?
+except:
+    pass
+
+def _alias(args=[], stdin=None):
+    table = []
+    for key,value in sorted(aliases.items()):
+        table.append([key,value])
+
+    print(tabulate(table, tablefmt='psql'))
+
+# Aliases
+aliases['hash'] = 'md5sum'
+aliases['alias'] = _alias
+aliases['matrix'] = 'cmatrix -a -b -u6'
+aliases['fucking'] = 'sudo'
+aliases['godmode'] = 'sudo xonsh'
+aliases['ll'] = "ls -alF"
+aliases['la'] = "ls -A"
+aliases['l'] = "ls -CF"
+aliases['..'] = "cd .."
+aliases['-'] = "cd -"
+
+source ~/.xonshrc-secrets

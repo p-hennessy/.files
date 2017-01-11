@@ -1,1 +1,10 @@
-/home/phennessy/.gitconfig
+[user]
+	email = phennessy@narrativescience.com
+	name = Patrick Hennessy
+
+[alias]
+	tree = log --oneline --graph --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
+	lg = log --oneline --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
+    patches = "!git cherry master HEAD -v | grep \"-\" | awk \"{print $2}\" | xargs -r git show --quiet"
+    releases = "!git branch -r | grep release"
+    open = "!chromium-browser \"$(git config remote.origin.url|sed -r 's%git@(.*):(.*).git%\\1/\\2\\/tree%')$(echo `git symbolic-ref HEAD||git rev-parse HEAD`|sed -r 's%refs/heads%%')\" 2>&1 > /dev/null"

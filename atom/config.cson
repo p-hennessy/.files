@@ -1,1 +1,82 @@
-config.cson
+"*":
+  autosave:
+    enabled: true
+  core:
+    audioBeep: false
+    customFileTypes:
+      "source.ini": [
+        ".buckconfig"
+        ".flowconfig"
+      ]
+      "source.json": [
+        ".arcconfig"
+        "BUCK.autodeps"
+      ]
+      "source.python": [
+        "BUCK"
+      ]
+    disabledPackages: [
+      "atom-terminal-panel"
+      "termy"
+      "term"
+      "atom-format-lua"
+      "linter-lua"
+      "neon-selection"
+      "terminal-plus"
+      "linter-markdown"
+      "linter-pylint"
+      "nav-panel-plus"
+      "tree-view"
+      "metrics"
+      "welcome"
+    ]
+    packagesWithKeymapsDisabled: [
+      "linter"
+    ]
+    projectHome: "/home/phennessy/Workspace"
+    themes: [
+      "one-dark-ui"
+      "cold-syntax"
+    ]
+  editor:
+    fontFamily: "Hack"
+    invisibles: {}
+    scrollPastEnd: true
+    showIndentGuide: true
+    tabLength: 4
+    tabType: "soft"
+    zoomFontWhenCtrlScrolling: false
+  "exception-reporting":
+    userId: "232ef820-676d-8319-4732-678d202cf765"
+  "file-watcher":
+    promptWhenFileHasChangedOnDisk: false
+  "find-and-replace":
+    focusEditorAfterSearch: true
+  linter:
+    alwaysTakeMinimumSpace: false
+    errorPanelHeight: 50
+    gutterPosition: "Left"
+    lintOnFly: false
+    showErrorPanel: false
+    showErrorTabFile: false
+    showErrorTabProject: false
+    statusIconScope: "File"
+  "linter-pep8":
+    maxLineLength: 80
+  nuclide:
+    "nuclide-home":
+      showHome: false
+  welcome:
+    showOnStartup: false
+".ansi.text":
+  editor:
+    tabLength: 4
+".hack.html.text":
+  editor:
+    tabLength: 4
+".hackfragment.source":
+  editor:
+    tabLength: 4
+".hg-commit.text":
+  editor:
+    tabLength: 4
