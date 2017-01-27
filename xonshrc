@@ -1,9 +1,14 @@
 from tabulate import tabulate
 import json
+import os
+import sys
 
 xontrib load vox
+xontrib load vox_tabcomplete
+xontrib load apt_tabcomplete
 
 # Shell Settings
+$SHELL_TYPE   = "prompt_toolkit"
 $CASE_SENSITIVE_COMPLETIONS = False
 $MULTILINE_PROMPT = ''
 $XONSH_COLOR_STYLE = 'monokai'
@@ -12,39 +17,78 @@ $VC_BRANCH_TIMEOUT = 1
 $COMPLETIONS_CONFIRM = True
 $COMPLETIONS_DISPLAY = 'single'
 $XONSH_AUTOPAIR = True
+$XONSH_SHOW_TRACEBACK = True
 
-if $USER == 'root':
-    $PROMPT = "{BOLD_WHITE}[{BOLD_RED}root {BOLD_WHITE}: {BOLD_YELLOW}{cwd_base}{BOLD_WHITE}]{prompt_end} {NO_COLOR}"
-else:
-    $PROMPT = "{BOLD_WHITE}[{BOLD_WHITE}" + $USER + " {BOLD_WHITE}: {BOLD_YELLOW}{cwd_base}{BOLD_WHITE}]{prompt_end} {NO_COLOR}"
+def _virtualenv():
+    env = __xonsh_env__.get('VIRTUAL_ENV', '')
+    if env:
+        env = os.path.basename(env)
 
-$FORMATTER_DICT['branch_color'] = lambda: ('{BOLD_YELLOW}')
-$RIGHT_PROMPT = "{branch_color}{curr_branch}{NO_COLOR}"
-$SHELL_TYPE   = "prompt_toolkit"
-$TITLE        = "{current_job} [Xonsh]"
+        return '{BOLD_WHITE}({INTENSE_BLACK}' + env + '{BOLD_WHITE})'
+    else:
+        return ''
+
+def _gitbranch():
+    # If we're in a git repo
+    if !(git rev-parse --git-dir 2>&1 >> /dev/null):
+        output = ""
+
+        branch = $(git symbolic-ref HEAD -q | sed -r 's%refs/heads/%%').strip('\n') or 'DETACHED'
+        commit_hash = $(git rev-parse HEAD).strip('\n')[:7]
+        tags = [tag.rstrip() for tag in !(git tag -l --points-at HEAD)]
+
+        tag_output = ""
+
+        if tags:
+            for tag in tags:
+                tag_output += '{INTENSE_YELLOW}' + tag + ', '
+            else:
+                tag_output = ' Tags: {BOLD_WHITE}[' + tag_output.rstrip(', ') + '{BOLD_WHITE}]'
+
+        change_char = ''
+        if len($(git status -s)) > 0:
+            change_char = '*'
+
+        output += change_char
+        output += '{BOLD_YELLOW}' + branch
+        output += '{BOLD_WHITE}({INTENSE_BLACK}' + commit_hash + '{BOLD_WHITE})'
+        output += tag_output
+
+        return output
+
+    else:
+        return ''
+
+def _returncode():
+    try:
+        if __xonsh_history__.rtns[-1] != 0:
+            return '{BOLD_INTENSE_RED}' + str(__xonsh_history__.rtns[-1]) + ' '
+        else:
+            return ''
+    except Exception as e:
+        return ''
+
+$PROMPT_FIELDS['return_code'] = _returncode
+$PROMPT_FIELDS['virtualenv'] = _virtualenv
+$PROMPT_FIELDS['gitbranch'] = _gitbranch
+
+$PROMPT = "{return_code}{virtualenv}{BOLD_WHITE}[{BOLD_YELLOW}{cwd_base}{BOLD_WHITE}]$ {NO_COLOR}"
+$RIGHT_PROMPT = "{gitbranch}{NO_COLOR}"
 
 try:
     del $SHELL # Needed because it cannot find the `exec` sys call from the shell?
 except:
     pass
 
-def _alias(args=[], stdin=None):
-    table = []
-    for key,value in sorted(aliases.items()):
-        table.append([key,value])
-
-    print(tabulate(table, tablefmt='psql'))
-
 # Aliases
 aliases['hash'] = 'md5sum'
-aliases['alias'] = _alias
 aliases['matrix'] = 'cmatrix -a -b -u6'
 aliases['fucking'] = 'sudo'
-aliases['godmode'] = 'sudo xonsh'
 aliases['ll'] = "ls -alF"
 aliases['la'] = "ls -A"
 aliases['l'] = "ls -CF"
 aliases['..'] = "cd .."
 aliases['-'] = "cd -"
+aliases['pip3'] = 'python3 -m pip'
 
 source ~/.xonshrc-secrets
