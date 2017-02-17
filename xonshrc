@@ -1,6 +1,7 @@
 from tabulate import tabulate
 import json
 import os
+import math
 import sys
 
 xontrib load vox
@@ -35,7 +36,8 @@ def _gitbranch():
 
         branch = $(git symbolic-ref HEAD -q | sed -r 's%refs/heads/%%').strip('\n') or 'DETACHED'
         commit_hash = $(git rev-parse HEAD).strip('\n')[:7]
-        tags = [tag.rstrip() for tag in !(git tag -l --points-at HEAD)]
+        #tags = [tag.rstrip() for tag in !(git tag -l --points-at HEAD)]
+        tags = None
 
         tag_output = ""
 
@@ -68,6 +70,26 @@ def _returncode():
     except Exception as e:
         return ''
 
+@events.on_postcommand
+def _print_elapsed_time(ts, **kwargs):
+
+    elapsed = ts[1] - ts[0]
+    elapsed = math.ceil(elapsed)
+
+    if elapsed > 10:
+        readable = ""
+        days = int(elapsed / (60 * 60 * 24))
+        hours = int((elapsed / (60 * 60)) % 24)
+        minutes = int((elapsed % (60 * 60)) / 60)
+        seconds = int(elapsed % 60)
+
+        if(days > 0):       readable += str(days) + "d "
+        if(hours > 0):      readable += str(hours) + "h "
+        if(minutes > 0):    readable += str(minutes) + "m "
+        if(seconds > 0):    readable += str(seconds) + "s "
+
+        print("Xonsh: Command took {}".format(readable))
+
 $PROMPT_FIELDS['return_code'] = _returncode
 $PROMPT_FIELDS['virtualenv'] = _virtualenv
 $PROMPT_FIELDS['gitbranch'] = _gitbranch
@@ -90,5 +112,6 @@ aliases['l'] = "ls -CF"
 aliases['..'] = "cd .."
 aliases['-'] = "cd -"
 aliases['pip3'] = 'python3 -m pip'
+aliases['atom'] = '/usr/bin/atom -a'
 
 source ~/.xonshrc-secrets
