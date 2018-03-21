@@ -9,3 +9,6 @@
     releases = "!git branch -r | grep release | sort --version-sort"
     open = "!chromium-browser \"$(git config remote.origin.url|sed -r 's%git@(.*):(.*).git%\\1/\\2\\/tree%')$(echo `git symbolic-ref HEAD||git rev-parse HEAD`|sed -r 's%refs/heads%%')\" 2>&1 > /dev/null"
     tags = tag -l --points-at HEAD
+    hash = rev-parse HEAD
+    latest = "!git pull origin master && git fetch origin && git submodule update --init && git status"
+    changes = "!bash -c 'git --no-pager log --no-merges --format=\"%cI,%aI,%h,%an,%s\" \"$(git merge-base $1 $2)..$2\"' -"
