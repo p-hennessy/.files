@@ -80,8 +80,6 @@ export CLICOLOR=1
 export LSCOLORS=exfxcxdxbxegedabagacad
 export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
-
-alias atom='atom -a'
 alias fucking='sudo'
 alias tf="terraform"
 
@@ -94,16 +92,9 @@ alias ..="cd .."
 alias chkcert="openssl x509 -text -noout -in"
 alias chkssl="openssl s_client -port 443 -host"
 
-alias sshk="ssh -i ~/.ssh/keys/devops-kharon -l centos"
-alias sshp="ssh -i ./ec2_amazon-ebs.pem -l centos"
-
 alias awsid="aws sts get-caller-identity"
 
-alias lsvm='function _lsvm(){awless ls instances --sort uptime --columns "uptime,name,state,type,private ip" --sort created --filter name="$1"}; _lsvm'
+alias lsi='function _lsvm(){awless ls instances --sort uptime --columns "uptime,name,state,type,private ip" --sort created --filter name="$1"}; _lsvm'
 alias lsami='function _lsami(){awless ls images --columns "name,id,created" --sort created --filter name="$1"}; _lsami'
-
-# aliases['lsdb'] = lambda args: ![awless ls databases --columns "created,id,state,storage,engine,version" --sort created]
-# aliases['lszones'] = lambda args: ![awless ls zones --columns "name,id,private,nb records"]
-# aliases['lsdns'] = lambda args: ![awless ls records --sort zone,type --columns "type,name,records,ttl,zone" @(["--filter", "zone=" + args[0]])]
 
 source ~/.zshrc-secrets

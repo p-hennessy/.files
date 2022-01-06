@@ -1,58 +1,68 @@
 [user]
-	email = phennessy@narrativescience.com
-	name = Patrick Hennessy
+        email = phennessy@narrativescience.com
+        name = Patrick Hennessy
 
 [alias]
-   	tree = log --oneline --graph --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
-	lg = log --oneline --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
-	branches = branch --list
+        tree = log --oneline --graph --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
+        lg = log --oneline --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
+        branches = branch --list
     	remote-branches = "!git branch -r | sed -E 's/^. *origin\\///g'"
+        check = "!pre-commit run"
 
-	repo = "!f(){ git clone git@github.com:NarrativeScience/$1.git; }; f"
+        repo = "!f(){ git clone git@github.com:NarrativeScience/$1.git; }; f"
 
-    	# Shortcut for getting up to date with remote
-    	latest = "!git pull origin master && git fetch origin && git submodule update --init && git fetch origin --prune"
+        # Shortcut for getting up to date with remote
+        latest = "!git pull origin master && git fetch origin && git submodule update --init && git fetch origin --prune"
 
-    	# Show changes between 2 ref's
-    	changes = "!bash -c 'git --no-pager log --no-merges --format=\"%cI,%aI,%h,%an,%s\" \"$(git merge-base $1 $2)..$2\"' -"
+        # Show changes between 2 ref's
+        changes = "!bash -c 'git --no-pager log --no-merges --format=\"%cI,%aI,%h,%an,%s\" \"$(git merge-base $1 $2)..$2\"' -"
 
-   	 # Checks out a random branch name, adds a commit message, pushes to the branch and opens a PR in github
-    	cbo = "!bash -c 'git rand-branch && git commit -m \"$1\" && git push && git open-pr' -"
+         # Checks out a random branch name, adds a commit message, pushes to the branch and opens a PR in github
+        cbo = "!bash -c 'git rand-branch && git commit -m \"$1\" && git push && git open-pr' -"
 
-    	# Checkout a branch with a random name
-    	rand-branch = "!git checkout -b $(shuf -n1 /usr/share/dict/words | sed \"s/'//g\" | awk '{print tolower($0)}')"
+        # Checkout a branch with a random name
+        rand-branch = "!git checkout -b $(shuf -n1 /usr/share/dict/words | sed s/\\'//g | awk '{print tolower($0)}')"
 
-    	# Translate the SSH git url to an HTTPs one
-    	remoteurl = "!echo `git config remote.origin.url | sed -E 's%git@(.*):(.*).git%https://\\1/\\2\\/%'`"
+        # Translate the SSH git url to an HTTPs one
+        remoteurl = "!echo `git config remote.origin.url | sed -E 's%git@(.*):(.*).git%https://\\1/\\2\\/%'`"
 
-    	# Get the symbolic ref or hash of a detached head
-    	ref = "!echo `git symbolic-ref HEAD 2> /dev/null ||git rev-parse HEAD`|sed -E 's%refs/heads/%%'"
+        # Get the symbolic ref or hash of a detached head
+        ref = "!echo `git symbolic-ref HEAD 2> /dev/null ||git rev-parse HEAD`|sed -E 's%refs/heads/%%'"
 
-    	# Open the current ref in Github
-    	open-ref = "!open -a \"Google Chrome\" \"$(git remoteurl)/tree/$(git ref)\""
-    	open = "!git open-ref"
+        # Open the current ref in Github
+        open-ref = "!open -a \"Google Chrome\" \"$(git remoteurl)/tree/$(git ref)\""
+        open = "!git open-ref"
 
-    	# Create a PR in Github on the current branch
-	open-pr = "!open -a \"Google Chrome\" \"$(git remoteurl)/compare/$(git ref)?expand=1\""
-    	pr = "!git open-pr"
+        # Create a PR in Github on the current branch
+        open-pr = "!open -a \"Google Chrome\" \"$(git remoteurl)/compare/$(git ref)?expand=1\""
+        pr = "!git open-pr"
 
-    	# A better log output
-    	history = log --oneline --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
+        # A better log output
+        history = log --oneline --decorate --format='%C(auto)%h [%Cblue%an %Creset: %Cgreen%ar%C(reset)%C(auto)] %s%d' --color
 
-    	# Show who is the coolest commiter
-    	scoreboard = shortlog -s -n
+        # Show who is the coolest commiter
+        scoreboard = shortlog -s -n
 
-    	# List all tags on the current HEAD
-    	tags = tag -l --points-at HEAD
+        # List all tags on the current HEAD
+        tags = tag -l --points-at HEAD
 
-    	# Shortcut for just getting
-    	hash = rev-parse HEAD
+        # Shortcut for just getting
+        hash = rev-parse HEAD
 
-    	# Misc cool stuff
-    	undo = reset HEAD~1 --mixed
-    	amend = commit -a --amend
-    	dd = diff --check --dirstat --find-copies --find-renames --histogram --color
-	
+        # Misc cool stuff
+        undo = reset HEAD~1 --mixed
+        amend = commit -a --amend
+        dd = diff --check --dirstat --find-copies --find-renames --histogram --color
+
 [push]
-	# Makes it so you dont have to define upstream everything you push or pull
-	default = current
+        # Makes it so you dont have to define upstream everything you push or pull
+        default = current
+
+[pull]
+        ff = only
+
+[oh-my-zsh]
+        hide-status = 1
+
+[url "ssh://git@github.com/"]
+        insteadOf = https://github.com/
